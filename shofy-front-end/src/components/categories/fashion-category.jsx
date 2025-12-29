@@ -53,6 +53,9 @@ const FashionCategory = () => {
   }
   if (!isLoading && !isError && categories?.result?.length > 0) {
     const category_items = categories.result;
+    const overrideImages = {
+      joggers: "/assets/img/supersaving/Cargo_min_web_cards_cd0d845a89.jpg",
+    };
     content = category_items.map((item) => (
       <div
         key={item._id}
@@ -66,7 +69,9 @@ const FashionCategory = () => {
           overflow: "hidden",
           boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
           position: "relative",
-          backgroundImage: `url(${item.img})`,
+          backgroundImage: `url(${
+            overrideImages[item.parent?.toLowerCase()] || item.img
+          })`,
           backgroundPosition: "center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",

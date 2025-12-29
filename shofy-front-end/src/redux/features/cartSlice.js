@@ -13,27 +13,33 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     add_cart_product: (state, { payload }) => {
+      // allow callers to pass an explicit quantity (e.g., combo products)
+      const incomingQty =
+        typeof payload.orderQuantity === "number" && payload.orderQuantity > 0
+          ? payload.orderQuantity
+          : state.orderQuantity;
+
       const isExist = state.cart_products.some((i) => i._id === payload._id);
       if (!isExist) {
         const newItem = {
           ...payload,
-          orderQuantity: state.orderQuantity,
+          orderQuantity: incomingQty,
         };
         state.cart_products.push(newItem);
-        notifySuccess(`${state.orderQuantity} ${payload.title} added to cart`);
+        notifySuccess(`${incomingQty} ${payload.title} added to cart`);
       } else {
         state.cart_products.map((item) => {
           if (item._id === payload._id) {
-            if (item.quantity >= item.orderQuantity + state.orderQuantity) {
-              item.orderQuantity =
-                state.orderQuantity !== 1
-                  ? state.orderQuantity + item.orderQuantity
-                  : item.orderQuantity + 1;
-              notifySuccess(`${state.orderQuantity} ${item.title} added to cart`);
-            } else {
+            const hasStockLimit =
+              typeof item.quantity === "number" && item.quantity >= 0;
+            const desiredQty = item.orderQuantity + incomingQty;
+            if (hasStockLimit && item.quantity < desiredQty) {
               notifyError("No more quantity available for this product!");
               state.orderQuantity = 1;
+              return { ...item };
             }
+            item.orderQuantity = desiredQty;
+            notifySuccess(`${incomingQty} ${item.title} added to cart`);
           }
           return { ...item };
         });
@@ -74,9 +80,11 @@ export const cartSlice = createSlice({
       state.orderQuantity = 1;
     },
     clearCart:(state) => {
-      const isClearCart = window.confirm('Are you sure you want to remove all items ?');
-      if(isClearCart){
-        state.cart_products = []
+      if (typeof window !== 'undefined') {
+        const isClearCart = window.confirm('Are you sure you want to remove all items ?');
+        if(isClearCart){
+          state.cart_products = []
+        }
       }
       setLocalStorage("cart_products", state.cart_products);
     },

@@ -32,7 +32,7 @@ const ProductSmItem = ({ product }) => {
       </div>
       <div className="tp-product-sm-content">
         <div className="tp-product-category">
-          <a href="#">{category?.name}</a>
+          <span>{category?.name}</span>
         </div>
         <h3 className="tp-product-title">
           <Link href={`/product-details/${_id}`}>{title}</Link>

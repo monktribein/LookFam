@@ -14,7 +14,6 @@ import { add_to_wishlist } from "@/redux/features/wishlist-slice";
 
 const ProductItem = ({ product, offer_style = false }) => {
   const { _id, img, category, title, reviews, price, discount,status,offerDate } = product || {};
-  console.log(status)
   const { cart_products } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
   const isAddedToCart = cart_products.some((prd) => prd._id === _id);
@@ -109,7 +108,7 @@ const ProductItem = ({ product, offer_style = false }) => {
         {/*  product content */}
         <div className="tp-product-content">
           <div className="tp-product-category">
-            <a href="#">{category?.name}</a>
+            <span>{category?.name}</span>
           </div>
           <h3 className="tp-product-title">
             <Link href={`/product-details/${_id}`}>{title}</Link>

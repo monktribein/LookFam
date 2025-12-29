@@ -70,6 +70,8 @@ export interface IProduct {
   createdAt: string;
   updatedAt: string;
   orderQuantity: number;
+  // optional combo selections for combo products
+  comboSelections?: { color: string; size: string }[];
 }
 
 export interface ProductResponse {

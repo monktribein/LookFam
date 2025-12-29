@@ -27,7 +27,6 @@ const useCloudinary = (
         const index = updatedFormData.findIndex(
           (item) => item.img === file.url
         );
-        console.log('index',index)
         if (index !== -1) {
           updatedFormData[index] = { ...updatedFormData[index], img: "" };
         } 
@@ -38,7 +37,7 @@ const useCloudinary = (
       setItem({ url: "", id: "" });
       setImgUrl("");
     }
-  }, [delData, delError, file, item.id, file.url, setFormData, setImgUrl]);
+  }, [delData, delError, file.url, setFormData, setImgUrl]);
 
   // handle delete image 
   const handleDeleteImg = (file: { url: string; id: string }) => {
@@ -54,7 +53,6 @@ const useCloudinary = (
       setItem({ url: "", id: "" });
     } catch (error) {
       // Handle the error
-      console.log(error)
       notifyError("Something went wrong");
     }
   };

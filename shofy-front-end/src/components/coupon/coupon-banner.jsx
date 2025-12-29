@@ -5,10 +5,18 @@ import { useEffect, useState, useRef } from "react";
 
 const CouponBanner = () => {
   const [textPosition, setTextPosition] = useState(0);
+  const [mounted, setMounted] = useState(false);
   const animationRef = useRef(null);
+
+  // Ensure component is mounted before starting animation
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Slow left-to-right floating animation
   useEffect(() => {
+    if (!mounted) return;
+    
     const animate = () => {
       setTextPosition((prev) => {
         const newPos = prev + 0.3; // Slow movement from left to right
@@ -27,7 +35,7 @@ const CouponBanner = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [mounted]);
 
   // Coupon data
   const coupons = [

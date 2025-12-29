@@ -57,11 +57,18 @@ const InvoicePrint = ({ orderData }: IPropType) => {
                       className="bg-white border-b border-gray6 last:border-0 text-start mx-9"
                     >
                       <td className="pr-8 py-5 whitespace-nowrap">
-                        <a href="#" className="flex items-center space-x-5">
+                        <div className="flex items-start space-x-5">
                           <span className="font-medium text-heading text-hover-primary transition">
                             {p.title}
                           </span>
-                        </a>
+                        </div>
+                        {p?.comboSelections?.length ? (
+                          <div className="text-xs text-gray-500 mt-1">
+                            {p.comboSelections
+                              .map((c) => `${c.color} / ${c.size}`)
+                              .join(" | ")}
+                          </div>
+                        ) : null}
                       </td>
                       <td className="px-3 py-3 font-normal text-[#55585B] text-end">
                         {p.orderQuantity}

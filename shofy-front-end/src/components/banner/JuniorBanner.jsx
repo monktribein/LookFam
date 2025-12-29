@@ -5,13 +5,19 @@ import Link from "next/link";
 
 const JuniorBanner = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    if (typeof window === 'undefined') return;
+    
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     handleResize(); 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <section

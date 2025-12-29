@@ -5,6 +5,7 @@ const AutoSlider = () => {
   const scrollContainerRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   // ✅ Memoized image list
   const images = useMemo(
@@ -16,19 +17,25 @@ const AutoSlider = () => {
     []
   );
 
+  // Mount check
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // ✅ Auto slide
   useEffect(() => {
-    if (isHovered) return;
+    if (!mounted || isHovered) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [isHovered, images.length]);
+  }, [mounted, isHovered, images.length]);
 
   // ✅ Scroll to active image
   useEffect(() => {
+    if (!mounted) return;
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -36,10 +43,11 @@ const AutoSlider = () => {
       left: currentIndex * container.offsetWidth,
       behavior: "smooth",
     });
-  }, [currentIndex]);
+  }, [mounted, currentIndex]);
 
   // ✅ Detect manual scroll
   useEffect(() => {
+    if (!mounted) return;
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -47,15 +55,21 @@ const AutoSlider = () => {
       const newIndex = Math.round(
         container.scrollLeft / container.offsetWidth
       );
-      if (newIndex !== currentIndex) setCurrentIndex(newIndex);
+      setCurrentIndex((prevIndex) => {
+        if (newIndex !== prevIndex) {
+          return newIndex;
+        }
+        return prevIndex;
+      });
     };
 
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [currentIndex]);
+  }, [mounted]);
 
   // ✅ Keep alignment on resize
   useEffect(() => {
+    if (!mounted || typeof window === 'undefined') return;
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -69,7 +83,7 @@ const AutoSlider = () => {
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
-  }, [currentIndex]);
+  }, [mounted, currentIndex]);
 
   return (
     <section

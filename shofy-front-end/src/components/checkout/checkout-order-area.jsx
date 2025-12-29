@@ -22,6 +22,10 @@ const CheckoutOrderArea = ({ checkoutData }) => {
   } = checkoutData;
   const { cart_products } = useSelector((state) => state.cart);
   const { total } = useCartInfo();
+
+  // Disable submit only while submitting, or when card is selected but Stripe is not ready
+  const isSubmitDisabled =
+    isCheckoutSubmit || (showCard && (!stripe || !clientSecret));
   return (
     <div className="tp-checkout-place white-bg">
       <h3 className="tp-checkout-place-title">Your Order</h3>
@@ -167,7 +171,7 @@ const CheckoutOrderArea = ({ checkoutData }) => {
       <div className="tp-checkout-btn-wrapper">
         <button
           type="submit"
-          disabled={!stripe || isCheckoutSubmit}
+          disabled={isSubmitDisabled}
           className="tp-checkout-btn w-100"
         >
           Place Order

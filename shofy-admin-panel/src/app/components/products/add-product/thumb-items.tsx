@@ -29,8 +29,8 @@ const ThumbItems = ({ uploadItems }: IPropType) => {
         notifySuccess("Image deleted successfully");
       }
     } catch (error) {
-      // Handle the error
-      console.error(error);
+      // Handle the error silently to prevent console.error loops
+      notifyError("Failed to delete image");
     }
   };
 

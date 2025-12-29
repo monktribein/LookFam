@@ -46,14 +46,27 @@ const slider_setting = {
 
 const FashionBanner = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // ✅ Detect viewport size
+  // ✅ Detect viewport size after mount
   useEffect(() => {
+    setMounted(true);
+    if (typeof window === 'undefined') return;
+    
     const checkViewport = () => setIsMobile(window.innerWidth <= 768);
     checkViewport();
     window.addEventListener('resize', checkViewport);
     return () => window.removeEventListener('resize', checkViewport);
   }, []);
+
+  // Prevent hydration mismatch by not rendering Swiper until mounted
+  if (!mounted) {
+    return (
+      <section className="tp-slider-area relative z-[1] overflow-hidden">
+        <div className="tp-slider-item-2 tp-slider-height-2 relative w-full h-[600px] md:h-[750px] flex items-center justify-center bg-gray-50" />
+      </section>
+    );
+  }
 
   return (
     <section className="tp-slider-area relative z-[1] overflow-hidden">

@@ -23,8 +23,7 @@ const Pagination = ({
 
   useEffect(() => {
     paginatedData(items, pageStart, countOfPage);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, pageStart, countOfPage]);
+  }, [items, pageStart, countOfPage, paginatedData]);
 
   return (
     <nav>

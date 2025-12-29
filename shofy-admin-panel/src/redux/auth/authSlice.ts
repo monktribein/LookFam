@@ -34,7 +34,7 @@ if (cookieData) {
       user: parsedData.user,
     };
   } catch (error) {
-    console.error("Error parsing cookie data:", error);
+    // Silently handle cookie parse errors to prevent console.error loops
   }
 }
 

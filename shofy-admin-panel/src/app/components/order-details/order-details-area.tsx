@@ -122,7 +122,16 @@ const OrderDetailsArea = ({ id }: { id: string }) => {
                             {i + 1}
                           </td>
                           <td className="bg-white border-b border-gray6 px-3 pl-0 py-3 text-start">
-                            {item.title}
+                            <div className="flex flex-col gap-1">
+                              <span>{item.title}</span>
+                              {item?.comboSelections?.length ? (
+                                <span className="text-xs text-gray-500">
+                                  {item.comboSelections
+                                    .map((c) => `${c.color} / ${c.size}`)
+                                    .join(" | ")}
+                                </span>
+                              ) : null}
+                            </div>
                           </td>
                           <td className="bg-white border-b border-gray6 px-3 py-3 font-bold text-center">
                             {item.orderQuantity}

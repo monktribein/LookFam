@@ -55,14 +55,29 @@ const PopularProducts = () => {
     useGetPopularProductByTypeQuery("fashion");
 
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Detect mobile view
   useEffect(() => {
+    setMounted(true);
+    if (typeof window === 'undefined') return;
+    
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Don't render Swiper until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <section className="tp-popular-area pb-80 pt-85">
+        <div className="container">
+          <HomeTwoPopularPrdLoader loading={true} />
+        </div>
+      </section>
+    );
+  }
 
   let content = null;
 

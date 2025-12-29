@@ -26,6 +26,16 @@ const nextConfig = {
         protocol: "https",
         hostname: 'via.placeholder.com',
         pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: 'i5.walmartimages.com',
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: '5.imimg.com',
+        pathname: "**",
       }
     ],
   },

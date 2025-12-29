@@ -5,14 +5,20 @@ import Link from "next/link";
 
 const AdBanner = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Detect mobile vs desktop
   useEffect(() => {
+    setMounted(true);
+    if (typeof window === 'undefined') return;
+    
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (!mounted) return null;
 
   const desktopImg = "/assets/img/ad/maxresdefault.jpg";
   const mobileImg = "/assets/img/ad/ad banner.jpg";

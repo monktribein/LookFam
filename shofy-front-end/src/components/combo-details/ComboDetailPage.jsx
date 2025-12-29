@@ -8,6 +8,10 @@ import RelatedComboProduct from "./RelatedComboProduct";
 import ColorDropdown from "./Colordropdown";
 // import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { add_cart_product } from "@/redux/features/cartSlice";
+import { notifyError } from "@/utils/toast";
 
 const ComboDetailsPage = ({ mainImage, thumbnails = [] }) => {
   const [selectedColor1, setSelectedColor1] = useState("");
@@ -60,6 +64,57 @@ const ComboDetailsPage = ({ mainImage, thumbnails = [] }) => {
   };
 
   const sizes = ["S", "M", "L", "XL", "XXL"];
+
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const validateSelections = () => {
+    if (!selectedColor1 || !selectedSize1) return false;
+    if (!selectedColor2 || !selectedSize2) return false;
+    if (!selectedColor3 || !selectedSize3) return false;
+    return true;
+  };
+
+  const buildComboPayload = () => {
+    const comboSelections = [
+      { color: selectedColor1, size: selectedSize1 },
+      { color: selectedColor2, size: selectedSize2 },
+      { color: selectedColor3, size: selectedSize3 },
+    ];
+
+    const selectionKey = comboSelections
+      .map((s) => `${s.color}-${s.size}`)
+      .join("|")
+      .replace(/\s+/g, "-")
+      .toLowerCase();
+
+    return {
+      _id: `combo-plain-3-${selectionKey}`,
+      title: "Pick Any 3 - Plain T-shirt Combo 3.0",
+      price: 1099,
+      img: mainImageState,
+      comboSelections,
+      orderQuantity: quantity,
+      productType: "combo",
+    };
+  };
+
+  const handleAddToCart = () => {
+    if (!validateSelections()) {
+      notifyError("Please select color and size for all 3 tees.");
+      return false;
+    }
+    const payload = buildComboPayload();
+    dispatch(add_cart_product(payload));
+    return true;
+  };
+
+  const handleBuyNow = () => {
+    const ok = handleAddToCart();
+    if (ok) {
+      router.push("/checkout");
+    }
+  };
 
   return (
     <div>
@@ -321,19 +376,21 @@ const ComboDetailsPage = ({ mainImage, thumbnails = [] }) => {
                   </div>
 
                   {/* Add to Cart Button */}
-                  {/* <Link href="/cart"> */}
-                    <button className="flex-1 bg-white border border-[#F875AA] text-[#F875AA] font-bold py-2 rounded-lg text-lg transition-all">
-                      Add To Cart
-                    </button>
-                  {/* </Link> */}
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-1 bg-white border border-[#F875AA] text-[#F875AA] font-bold py-2 rounded-lg text-lg transition-all"
+                  >
+                    Add To Cart
+                  </button>
                 </div>
 
                 {/* Buy Now Button */}
-                <Link href = "/checkout">
-                  <button className="w-full bg-[#F875AA] text-white font-bold py-2 rounded-lg text-lg transition-all hover:bg-[#e6669a]">
-                    Buy Now
-                  </button>
-                </Link>
+                <button
+                  onClick={handleBuyNow}
+                  className="w-full bg-[#F875AA] text-white font-bold py-2 rounded-lg text-lg transition-all hover:bg-[#e6669a]"
+                >
+                  Buy Now
+                </button>
               </div>
 
               {/* compare  wishlist and ask question*/}

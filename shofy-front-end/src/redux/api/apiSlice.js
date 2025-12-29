@@ -15,7 +15,8 @@ export const apiSlice = createApi({
           }
         }
       } catch (error) {
-        console.error('Error parsing user info:', error);
+        // Silently handle cookie parse errors to prevent console.error loops
+        // The API call will proceed without auth headers
       }
       return headers;
     },

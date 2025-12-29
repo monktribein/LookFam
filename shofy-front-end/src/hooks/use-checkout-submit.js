@@ -105,8 +105,6 @@ const useCheckoutSubmit = () => {
     discountPercentage,
     cart_products,
     discountProductType,
-    discountAmount,
-    cartTotal,
   ]);
 
   // create payment intent
@@ -192,7 +190,10 @@ const useCheckoutSubmit = () => {
   }, [user, setValue, shipping_info, router]);
 
   // submitHandler
-  const submitHandler = async (data) => {
+  const submitHandler = async (data, evt) => {
+    // prevent native form submit from reloading page
+    if (evt?.preventDefault) evt.preventDefault();
+
     dispatch(set_shipping(data));
     setIsCheckoutSubmit(true);
 
@@ -243,17 +244,24 @@ const useCheckoutSubmit = () => {
     if (data.payment === 'COD') {
       saveOrder({
         ...orderInfo
-      }).then(res => {
-        if(res?.error){
-        }
-        else {
-          localStorage.removeItem("cart_products")
-          localStorage.removeItem("couponInfo");
-          setIsCheckoutSubmit(false)
-          notifySuccess("Your Order Confirmed!");
-          router.push(`/order/${res.data?.order?._id}`);
+      })
+      .unwrap()
+      .then(res => {
+        localStorage.removeItem("cart_products");
+        localStorage.removeItem("couponInfo");
+        setIsCheckoutSubmit(false);
+        notifySuccess("Your Order Confirmed!");
+        const orderId = res?.order?._id || res?.data?.order?._id;
+        if (orderId) {
+          router.push(`/order/${orderId}`);
+        } else {
+          router.push(`/order-success`);
         }
       })
+      .catch(err => {
+        setIsCheckoutSubmit(false);
+        notifyError(err?.data?.message || "Order failed. Please try again.");
+      });
     }
   };
 

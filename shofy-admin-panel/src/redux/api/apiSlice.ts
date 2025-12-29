@@ -9,13 +9,13 @@ export const apiSlice = createApi({
       try {
         const userInfo = Cookies.get("admin");
         if (userInfo) {
-          const user = JSON.parse(userInfo); 
+          const user = JSON.parse(userInfo);
           if (user?.accessToken) {
             headers.set("Authorization", `Bearer ${user.accessToken}`);
           }
         }
       } catch (error) {
-        console.error("Error parsing user info:", error);
+        // Silently handle cookie parse errors to prevent console.error loops
       }
       return headers;
     },

@@ -1,10 +1,8 @@
 'use client'
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-if (typeof window !== "undefined") {
-  require("bootstrap/dist/js/bootstrap");
-}
+
 // internal
 import BackToTopCom from "@/components/common/back-to-top";
 import ProductModal from "@/components/common/product-modal";
@@ -18,23 +16,35 @@ const Wrapper = ({ children }) => {
   const { productItem } = useSelector((state) => state.productModal);
   const dispatch = useDispatch();
   const authChecked = useAuthCheck();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Load bootstrap only on client side
+    if (typeof window !== "undefined") {
+      require("bootstrap/dist/js/bootstrap");
+    }
+    setMounted(true);
     dispatch(get_cart_products());
     dispatch(get_wishlist_products());
     dispatch(get_compare_products());
     dispatch(initialOrderQuantity());
   }, [dispatch]);
 
-  return !authChecked ? (
-    <div
-      className="d-flex align-items-center justify-content-center"
-      style={{ height: "100vh" }}
-    >
-      <Loader spinner="fade" loading={!authChecked} />
-    </div>
-  ) : (
-    <div id="wrapper">
+  // Prevent hydration mismatch by showing consistent initial state
+  if (!mounted || !authChecked) {
+    return (
+      <div
+        className="d-flex align-items-center justify-content-center"
+        style={{ height: "100vh" }}
+        suppressHydrationWarning
+      >
+        <Loader spinner="fade" loading={true} />
+      </div>
+    );
+  }
+
+  return (
+    <div id="wrapper" suppressHydrationWarning>
       {children}
       <BackToTopCom />
       <ToastContainer />
