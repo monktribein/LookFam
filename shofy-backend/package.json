@@ -1,20 +1,15 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "LookFam Backend Server",
   "main": "index.js",
   "engines": {
-    "node": ">=16"
+    "node": "18.x"
   },
   "scripts": {
-    "dev": "node index.js",
-    "build": "node index.js",
     "start": "node index.js",
-    "start-dev": "nodemon index.js",
-    "data:import": "node seed.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "data:import": "node seed.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
