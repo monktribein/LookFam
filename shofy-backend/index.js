@@ -123,7 +123,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
   "https://look-fam.vercel.app",   // ✅ Vercel frontend
-  "https://lookfame.in"
+  // "https://lookfame.in"
 ];
 
 app.use(
